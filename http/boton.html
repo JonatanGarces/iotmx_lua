@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>Garage Remote</title>
+   </head>
+   <script>
+      var xmlHttp = null;
+
+      function pushTheButton(door,url)
+      {
+         var url = "/"+url+".lc?door=" + door;
+
+         xmlHttp = new XMLHttpRequest();
+         xmlHttp.onreadystatechange = processRequest;
+         xmlHttp.open("GET", url, true);
+         xmlHttp.send( null );
+      }
+
+      function processRequest()
+      {
+         if(xmlHttp.readyState == 0)
+         {
+            document.getElementById("label").innerHTML = 'Initalizing...';
+            document.getElementById("label").className = "initalizing";
+         }
+         else if(xmlHttp.readyState == 1)
+         {
+            document.getElementById("label").innerHTML = 'Server connection established.';
+            document.getElementById("label").className = "connection";
+         }
+         else if(xmlHttp.readyState == 2)
+         {
+            document.getElementById("label").innerHTML = 'Request received.';
+            document.getElementById("label").className = "received";
+         }
+         else if(xmlHttp.readyState == 3)
+         {
+            document.getElementById("label").innerHTML = 'Processing request.';
+            document.getElementById("label").className = "processing";
+         }
+         else if(xmlHttp.readyState == 4)
+         {
+            if(xmlHttp.status == 200)
+            {
+               document.getElementById("label").innerHTML = xmlHttp.responseText;
+               document.getElementById("label").className = "ok";
+               sleep(300);
+               document.getElementById("label").className = "start";
+            }
+            else if(xmlHttp.status == 400)
+            {
+               document.getElementById("label").innerHTML = 'Bad request.';
+               document.getElementById("label").className = "bad";
+            }
+         }
+      }
+      function sleep(milliseconds){
+         var start = new Date().getTime();
+         for (var i = 0; i < 1e7; i++)
+         {
+            if ((new Date().getTime() - start) > milliseconds)
+            {
+               break;
+            }
+         }
+      }
+   </script>
+   <body bgcolor="#777777">
+                    <button onclick="pushTheButton(0,'contact');"> GPIO0</button>  
+      <button onclick="pushTheButton(1,'contact');"> GPIO1</button>  
+      <button onclick="pushTheButton(2,'contact');"> GPIO2</button>  
+    <button onclick="pushTheButton(3,'contact');"> GPIO0</button>  
+    <button onclick="pushTheButton(4,'motion');"> GPIO2 PIR</button>  
+    <button onclick="pushTheButton(0,'temp');"> TEMP0 </button>  
+ <button onclick="pushTheButton(1,'temp');"> TEMP1 </button>  
+ <button onclick="pushTheButton(2,'temp');"> TEMP2 </button>  
+ <button onclick="pushTheButton(3,'temp');"> TEMP3 </button>  
+  
+ <button onclick="pushTheButton(4,'temp');"> TEMP4 </button>
+ <button onclick="pushTheButton('','temp');"> TEMP4 </button>
+
+   </body>
+</html>
+
